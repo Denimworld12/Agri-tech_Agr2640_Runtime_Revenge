@@ -1,84 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import { useAuth } from "./AuthContext";
 import AuthFlow from "./AuthFlow";
 import PostLoginPasskeySetup from "./PostLoginPasskeySetup";
 
 const AuthWrapper = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [farmerData, setFarmerData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const { isAuthenticated, farmerData, loading, login, logout } = useAuth();
   const [showPasskeySetup, setShowPasskeySetup] = useState(false);
   const [justLoggedIn, setJustLoggedIn] = useState(false);
 
-  // Check for existing authentication on component mount
-  useEffect(() => {
-    const checkAuth = async () => {
-      const token = localStorage.getItem("authToken");
-      const storedFarmerData = localStorage.getItem("farmerData");
-
-      if (token && storedFarmerData) {
-        try {
-          // Verify token with backend
-          const response = await fetch(
-            `${import.meta.env.VITE_API_URL}/api/auth/profile`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-              },
-            }
-          );
-
-          if (response.ok) {
-            const profileData = await response.json();
-            setFarmerData(profileData);
-            setIsAuthenticated(true);
-            console.log("✅ Refreshed farmer data on app load:", profileData);
-          } else {
-            // Token invalid, clear storage
-            localStorage.removeItem("authToken");
-            localStorage.removeItem("farmerData");
-            console.log("❌ Token invalid, clearing storage");
-          }
-        } catch (error) {
-          console.error("Auth check failed:", error);
-          localStorage.removeItem("authToken");
-          localStorage.removeItem("farmerData");
-        }
-      }
-
-      setLoading(false);
-    };
-
-    checkAuth();
-  }, []);
-
   const handleLogin = async (authData) => {
-    // Save the token and initial data
-    localStorage.setItem("authToken", authData.access_token);
-    localStorage.setItem("farmerData", JSON.stringify(authData.farmer_data));
-
-    // Fetch the latest profile data from backend
-    try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/profile`, {
-        headers: {
-          Authorization: `Bearer ${authData.access_token}`,
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (response.ok) {
-        const latestProfileData = await response.json();
-        setFarmerData(latestProfileData);
-        console.log("✅ Fresh farmer data loaded:", latestProfileData);
-      } else {
-        // Fallback to auth data if profile fetch fails
-        setFarmerData(authData.farmer_data);
-      }
-    } catch (error) {
-      console.error("❌ Failed to fetch latest profile:", error);
-      // Fallback to auth data
-      setFarmerData(authData.farmer_data);
-    }
+    // Use AuthContext login
+    await login(authData);
 
     // Check if this was a password login (not passkey login)
     const isPasswordLogin =
@@ -107,22 +39,17 @@ const AuthWrapper = ({ children }) => {
             // Show passkey setup for new password logins
             setJustLoggedIn(true);
             setShowPasskeySetup(true);
-            return; // Don't set authenticated yet
+            return; // Passkey setup will be shown
           }
         }
       } catch (error) {
         console.error("Failed to check existing passkeys:", error);
       }
     }
-
-    setIsAuthenticated(true);
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("authToken");
-    localStorage.removeItem("farmerData");
-    setIsAuthenticated(false);
-    setFarmerData(null);
+    logout();
     setShowPasskeySetup(false);
     setJustLoggedIn(false);
   };
@@ -130,22 +57,20 @@ const AuthWrapper = ({ children }) => {
   const handlePasskeySetupComplete = () => {
     setShowPasskeySetup(false);
     setJustLoggedIn(false);
-    setIsAuthenticated(true);
   };
 
   const handleSkipPasskeySetup = () => {
     setShowPasskeySetup(false);
     setJustLoggedIn(false);
-    setIsAuthenticated(true);
   };
 
   // Show loading spinner
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#F7FEE7] via-[#ECFCCB] to-[#FEF9C3]">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading Agriti...</p>
+          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-[#65A30D] mx-auto mb-4"></div>
+          <p className="text-[#14532D] text-lg font-semibold">Loading Agriti...</p>
         </div>
       </div>
     );
