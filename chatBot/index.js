@@ -93,9 +93,12 @@ app.post("/chat", async (req, res) => {
   const authHeader = req.headers.authorization;
   const token = authHeader?.split(" ")[1];
 
+  const BASE_URL = window.location.hostname === "localhost"
+  ? "http://localhost:8000/api/chat"
+  : "https://hackvision-2026-agritech.onrender.com/api/chat";
 
   try {
-    const response = await fetch("https://hackvision-2026-agritech.onrender.com/api/chat", {
+    const response = await fetch(BASE_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
