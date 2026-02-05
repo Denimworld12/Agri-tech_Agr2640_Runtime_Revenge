@@ -125,7 +125,7 @@ function MarketPrices({ language }) {
           </h1>
         </div>
         <p className="text-base-content/60 font-medium ml-12">
-          {language === "ml" ? "നിങ്ങളുടെ വിളകൾക്ക് മികച്ച വില കണ്ടെത്തുക" : "Track daily vegetable rates across Kerala"}
+          {language === "ml" ? "നിങ്ങളുടെ വിളകൾക്ക് മികച്ച വില കണ്ടെത്തുക" : "Track daily vegetable rates"}
         </p>
       </div>
 

@@ -93,10 +93,7 @@ app.post("/chat", async (req, res) => {
   const authHeader = req.headers.authorization;
   const token = authHeader?.split(" ")[1];
 
-  const BASE_URL = window.location.hostname === "localhost"
-  ? "http://localhost:8000/api/chat"
-  : "https://hackvision-2026-agritech.onrender.com/api/chat";
-
+  const BASE_URL = "http://localhost:8000/api/chat"; // Update with your actual backend URL
   try {
     const response = await fetch(BASE_URL, {
       method: "POST",

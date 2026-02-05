@@ -15,16 +15,16 @@ const Chatbot = ({ language = "en" }) => {
   // Translations
   const translations = {
     en: {
-      title: "Agriti",
-      placeholder: "Ask me about farming...",
+      title: "Krishi Saathi",
+      placeholder: "Ask me about Kerala farming...",
       send: "Send",
       listening: "Listening...",
       startVoice: "Start Voice",
       stopVoice: "Stop Voice",
       speak: "Speak",
-      typing: "Agriti is typing...",
+      typing: "Krishi Saathi is typing...",
       welcomeMessage:
-        "Hello! I'm Agriti, your trusted farming advisor for . Ask me about crops, weather, diseases, or any farming questions!",
+        "Hello! I'm Krishi Saathi, your trusted farming advisor for Kerala. Ask me about crops, weather, diseases, or any farming questions!",
       voiceNotSupported: "Voice recognition is not supported in your browser.",
       speakNotSupported: "Text-to-speech is not supported in your browser.",
       microphoneError: "Error accessing microphone. Please check permissions.",
@@ -164,14 +164,17 @@ const Chatbot = ({ language = "en" }) => {
 
     try {
       // Call the actual API
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/chat`, {
+      const token = localStorage.getItem("authToken");
+      const response = await fetch("http://localhost:8000/api/chat", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           message: userMessage.text,
           language: language,
+          location: "Mumbai"
         }),
       });
 
@@ -179,7 +182,7 @@ const Chatbot = ({ language = "en" }) => {
         throw new Error("Failed to get response from server");
       }
 
-      const data = await response.json();
+      const data =  await response.json();
 
       const botResponse = {
         id: Date.now() + 1,
@@ -205,7 +208,7 @@ const Chatbot = ({ language = "en" }) => {
     }
   };
 
-  // Generate -specific mock bot responses (fallback)
+  // Generate Kerala-specific mock bot responses (fallback)
   const generateBotResponse = (userMessage) => {
     const message = userMessage.toLowerCase();
 
@@ -235,9 +238,9 @@ const Chatbot = ({ language = "en" }) => {
       return "നമസ്കാരം! ഞാൻ കൃഷി സാഥിയാണ്, കേരള കർഷകരുടെ സഹായി. നിങ്ങൾക്ക് കൃഷി, വിള, കാലാവസ്ഥയെക്കുറിച്ച് എന്നോട് ചോദിക്കാം.";
     }
 
-    // English responses for  farming
+    // English responses for Kerala farming
     if (message.includes("crop") || message.includes("farming")) {
-      return "In , rice, coconut, spices, and vegetables grow excellently! The monsoon season (June-September) is perfect for rice cultivation. Which crop would you like to know about?";
+      return "In Kerala, rice, coconut, spices, and vegetables grow excellently! The monsoon season (June-September) is perfect for rice cultivation. Which crop would you like to know about?";
     }
     if (message.includes("disease") || message.includes("pest")) {
       return "To protect plants from diseases, spray neem oil regularly. Remove infected leaves immediately. Our Disease Detector can help identify plant problems accurately.";
@@ -247,26 +250,26 @@ const Chatbot = ({ language = "en" }) => {
       message.includes("rain") ||
       message.includes("monsoon")
     ) {
-      return " monsoon season runs from June to September. This is the best time for rice planting. After rains, take good care of coconut and spice plants.";
+      return "Kerala's monsoon season runs from June to September. This is the best time for rice planting. After rains, take good care of coconut and spice plants.";
     }
     if (message.includes("price") || message.includes("market")) {
-      return "Check our Market Prices section for current rates. In  spices like cardamom and pepper often fetch good prices. Local markets usually offer better rates.";
+      return "Check our Market Prices section for current rates. In Kerala, spices like cardamom and pepper often fetch good prices. Local markets usually offer better rates.";
     }
     if (message.includes("coconut")) {
-      return "Coconut is 's pride! Plant coconut palms 8 meters apart. They need good drainage and regular watering during dry periods. Harvest when coconuts are mature but not overripe.";
+      return "Coconut is Kerala's pride! Plant coconut palms 8 meters apart. They need good drainage and regular watering during dry periods. Harvest when coconuts are mature but not overripe.";
     }
     if (message.includes("rice") || message.includes("paddy")) {
-      return "Rice is 's staple crop. Plant during monsoon (June-July). Keep fields flooded but not waterlogged. Harvest when grains turn golden yellow.";
+      return "Rice is Kerala's staple crop. Plant during monsoon (June-July). Keep fields flooded but not waterlogged. Harvest when grains turn golden yellow.";
     }
     if (
       message.includes("spice") ||
       message.includes("pepper") ||
       message.includes("cardamom")
     ) {
-      return " is famous for spices! Black pepper needs support structures and partial shade. Cardamom grows well in hill areas. Both need consistent moisture and good drainage.";
+      return "Kerala is famous for spices! Black pepper needs support structures and partial shade. Cardamom grows well in hill areas. Both need consistent moisture and good drainage.";
     }
 
-    return "Hello! I'm Agriti, your farming assistant for . Ask me about crops, farming methods, weather, or any agricultural questions you have!";
+    return "Hello! I'm Krishi Saathi, your farming assistant for Kerala. Ask me about crops, farming methods, weather, or any agricultural questions you have!";
   };
 
   // Handle voice input
@@ -369,19 +372,22 @@ const Chatbot = ({ language = "en" }) => {
         {messages.map((message) => (
           <div
             key={message.id}
-            className={`flex ${message.sender === "user" ? "justify-end" : "justify-start"
-              }`}
+            className={`flex ${
+              message.sender === "user" ? "justify-end" : "justify-start"
+            }`}
           >
             <div
-              className={`w-full flex ${message.sender === "user" ? "flex-row-reverse" : "flex-row"
-                } items-end space-x-2`}
+              className={`w-full flex ${
+                message.sender === "user" ? "flex-row-reverse" : "flex-row"
+              } items-end space-x-2`}
             >
               {/* Avatar - Compact for sidebar */}
               <div
-                className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${message.sender === "user"
-                  ? "bg-blue-500 ml-2"
-                  : "bg-green-500 mr-2"
-                  }`}
+                className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                  message.sender === "user"
+                    ? "bg-blue-500 ml-2"
+                    : "bg-green-500 mr-2"
+                }`}
               >
                 <span className="text-white text-sm">
                   {message.sender === "user" ? "👤" : "🤖"}
@@ -391,10 +397,11 @@ const Chatbot = ({ language = "en" }) => {
               {/* Message bubble - Optimized for sidebar */}
               <div className="flex flex-col flex-1 min-w-0">
                 <div
-                  className={`px-3 py-2 rounded-lg shadow-sm ${message.sender === "user"
-                    ? "bg-blue-500 text-white rounded-br-md"
-                    : "bg-white text-gray-900 border border-gray-200 rounded-bl-md"
-                    }`}
+                  className={`px-3 py-2 rounded-lg shadow-sm ${
+                    message.sender === "user"
+                      ? "bg-blue-500 text-white rounded-br-md"
+                      : "bg-white text-gray-900 border border-gray-200 rounded-bl-md"
+                  }`}
                 >
                   <p className="text-base leading-relaxed font-medium break-words">
                     {message.text}
@@ -403,8 +410,9 @@ const Chatbot = ({ language = "en" }) => {
 
                 {/* Message actions - Larger and more accessible */}
                 <div
-                  className={`flex items-center mt-3 space-x-3 ${message.sender === "user" ? "justify-end" : "justify-start"
-                    }`}
+                  className={`flex items-center mt-3 space-x-3 ${
+                    message.sender === "user" ? "justify-end" : "justify-start"
+                  }`}
                 >
                   <span className="text-sm text-gray-500 font-medium">
                     {message.timestamp.toLocaleTimeString([], {
@@ -462,10 +470,11 @@ const Chatbot = ({ language = "en" }) => {
           {/* Voice input button */}
           <Button
             onClick={toggleVoiceInput}
-            className={`px-3 py-3 text-sm ${isListening
-              ? "bg-red-500 hover:bg-red-600"
-              : "bg-blue-500 hover:bg-blue-600"
-              } text-white border-0 font-medium shadow-md flex-shrink-0 rounded-full`}
+            className={`px-3 py-3 text-sm ${
+              isListening
+                ? "bg-red-500 hover:bg-red-600"
+                : "bg-blue-500 hover:bg-blue-600"
+            } text-white border-0 font-medium shadow-md flex-shrink-0 rounded-full`}
             disabled={isSpeaking}
             title={isListening ? t.stopVoice : t.startVoice}
           >

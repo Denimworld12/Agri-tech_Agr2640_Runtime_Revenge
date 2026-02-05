@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
-const backendUrl = "https://hackvision-2026-agritech-kjlk.onrender.com";
-
+// const backendUrl = "https://hackvision-2026-agritech-kjlk.onrender.com";
+const backendUrl = "http://localhost:8080"
 const ChatContext = createContext();
 
 export const ChatProvider = ({ children }) => {
