@@ -8,34 +8,34 @@ export const ChatProvider = ({ children }) => {
   const chat = async (message) => {
     setLoading(true);
     try {
-  const token = localStorage.getItem("authToken"); // 👈 get token
+      const token = localStorage.getItem("authToken"); // 👈 get token
 
-  const response = await fetch(`${backendUrl}/chat`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: token ? `Bearer ${token}` : "",
-    },
-    body: JSON.stringify({ message }),
-  });
+      const response = await fetch(`${backendUrl}/chat`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token ? `Bearer ${token}` : "",
+        },
+        body: JSON.stringify({ message }),
+      });
 
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
-  }
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
-  const data = await response.json();
+      const data = await response.json();
 
-  let resp;
-  if (data.messages && Array.isArray(data.messages)) {
-    resp = data.messages;
-  } else if (Array.isArray(data)) {
-    resp = data;
-  } else {
-    resp = [data];
-  }
+      let resp;
+      if (data.messages && Array.isArray(data.messages)) {
+        resp = data.messages;
+      } else if (Array.isArray(data)) {
+        resp = data;
+      } else {
+        resp = [data];
+      }
 
-  setMessages((messages) => [...messages, ...resp]);
-} catch (error) {
+      setMessages((messages) => [...messages, ...resp]);
+    } catch (error) {
       console.error("Chat error:", error);
       // Add error message to chat
       setMessages((messages) => [

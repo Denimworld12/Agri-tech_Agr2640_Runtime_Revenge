@@ -5,18 +5,24 @@ import SignupForm from "./SignupForm";
 import LoginForm from "./LoginForm";
 import PasskeyLoginWithPhone from "./PasskeyLoginWithPhone";
 
-const AuthFlow = ({ onAuthSuccess }) => {
-  const [currentStep, setCurrentStep] = useState("language"); // language, choice, signup, login, passkey
+const AuthFlow = ({ onAuthSuccess, initialStep }) => {
+  const [currentStep, setCurrentStep] = useState(initialStep || "language"); // language, choice, signup, login, passkey
   const [selectedLanguage, setSelectedLanguage] = useState("");
 
   useEffect(() => {
-    // Check if language is already selected
-    const storedLanguage = localStorage.getItem("preferredLanguage");
-    if (storedLanguage) {
+    // Only auto-set if no initialStep is provided (default behavior)
+    if (!initialStep) {
+      const storedLanguage = localStorage.getItem("preferredLanguage");
+      if (storedLanguage) {
+        setSelectedLanguage(storedLanguage);
+        setCurrentStep("choice");
+      }
+    } else if (initialStep === "login" || initialStep === "signup") {
+      // If direct link to login/signup, ensure language is set if possible, otherwise default to en
+      const storedLanguage = localStorage.getItem("preferredLanguage") || "en";
       setSelectedLanguage(storedLanguage);
-      setCurrentStep("choice");
     }
-  }, []);
+  }, [initialStep]);
 
   const handleLanguageSelect = (language) => {
     setSelectedLanguage(language);

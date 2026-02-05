@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useAuth } from "./AuthContext";
-import AuthFlow from "./AuthFlow";
+import { Navigate } from "react-router-dom";
 import PostLoginPasskeySetup from "./PostLoginPasskeySetup";
 
 const AuthWrapper = ({ children }) => {
@@ -88,7 +88,7 @@ const AuthWrapper = ({ children }) => {
 
   // Show authentication if not logged in
   if (!isAuthenticated) {
-    return <AuthFlow onAuthSuccess={handleLogin} />;
+    return <Navigate to="/login" replace />;
   }
 
   // Show main app with farmer context

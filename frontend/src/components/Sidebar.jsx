@@ -1,12 +1,23 @@
 import React from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const Sidebar = ({
-  activeItem,
-  setActiveItem,
   isCollapsed,
   language = "en",
 }) => {
-  const [location, setLocation] = React.useState(null);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const activeItem = location.pathname.split('/')[1] || "dashboard"; // Get current route name
+
+  // Mapping for route aliases
+  const getActiveId = () => {
+    if (activeItem === "") return "dashboard";
+    return activeItem;
+  };
+
+  const currentId = getActiveId();
+
+  const [loc, setLoc] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(false);
 
   const fetchLocation = () => {
@@ -15,17 +26,17 @@ const Sidebar = ({
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
-          setLocation({ latitude, longitude });
+          setLoc({ latitude, longitude });
           setIsLoading(false);
         },
         (error) => {
           console.error("Error getting location:", error);
-          setLocation({ error: "Unable to fetch location" });
+          setLoc({ error: "Unable to fetch location" });
           setIsLoading(false);
         }
       );
     } else {
-      setLocation({ error: "Geolocation not supported" });
+      setLoc({ error: "Geolocation not supported" });
       setIsLoading(false);
     }
   };
@@ -87,14 +98,14 @@ const Sidebar = ({
                 </span>
               </button>
 
-              {location && (
+              {loc && (
                 <div className="mt-2 text-[10px] font-mono text-white/60 flex justify-between px-1">
-                  {location.error ? (
-                    <span className="text-error/80">{location.error}</span>
+                  {loc.error ? (
+                    <span className="text-error/80">{loc.error}</span>
                   ) : (
                     <>
-                      <span>{location.latitude?.toFixed(2)}°N</span>
-                      <span>{location.longitude?.toFixed(2)}°E</span>
+                      <span>{loc.latitude?.toFixed(2)}°N</span>
+                      <span>{loc.longitude?.toFixed(2)}°E</span>
                     </>
                   )}
                 </div>
@@ -109,14 +120,14 @@ const Sidebar = ({
             {menuItems.map((item) => (
               <li key={item.id}>
                 <button
-                  onClick={() => setActiveItem(item.id)}
-                  className={`flex items-center gap-4 py-3 rounded-xl transition-all duration-200 ${activeItem === item.id
+                  onClick={() => navigate(`/${item.id}`)}
+                  className={`flex items-center gap-4 py-3 rounded-xl transition-all duration-200 ${currentId === item.id
                     ? "bg-white text-[#064e3b] font-bold shadow-lg scale-[1.02]"
                     : "hover:bg-white/10 text-white/70 hover:text-white"
                     } ${isCollapsed ? "justify-center px-0" : "px-4"}`}
                   title={isCollapsed ? getLabel(item) : ""}
                 >
-                  <span className={`material-symbols-outlined ${activeItem === item.id ? "text-[#064e3b]" : "text-inherit"}`}>
+                  <span className={`material-symbols-outlined ${currentId === item.id ? "text-[#064e3b]" : "text-inherit"}`}>
                     {item.icon}
                   </span>
                   {!isCollapsed && <span className="text-sm tracking-wide">{getLabel(item)}</span>}
@@ -145,14 +156,14 @@ const Sidebar = ({
           {menuItems.map((item) => (
             <button
               key={item.id}
-              onClick={() => setActiveItem(item.id)}
-              className={`flex flex-col items-center justify-center min-w-[60px] px-2 py-2 rounded-xl transition-all duration-200 ${activeItem === item.id
+              onClick={() => navigate(`/${item.id}`)}
+              className={`flex flex-col items-center justify-center min-w-[60px] px-2 py-2 rounded-xl transition-all duration-200 ${currentId === item.id
                 ? "bg-white text-[#064e3b] shadow-lg scale-105"
                 : "text-white/70 hover:text-white hover:bg-white/10"
                 }`}
               title={getLabel(item)}
             >
-              <span className={`material-symbols-outlined text-2xl ${activeItem === item.id ? "text-[#064e3b]" : "text-inherit"}`}>
+              <span className={`material-symbols-outlined text-2xl ${currentId === item.id ? "text-[#064e3b]" : "text-inherit"}`}>
                 {item.icon}
               </span>
               <span className="text-[10px] font-bold mt-1 truncate max-w-full">

@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const AppBar = ({
-  activeItem,
   toggleSidebar,
   language,
   toggleLanguage,
   farmerData,
   onLogout,
-  setActiveItem,
 }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const activeItem = location.pathname.split('/')[1] || "dashboard"; // Get current route name
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
 
@@ -166,7 +168,7 @@ const AppBar = ({
                 <div className="p-2">
                   <button
                     onClick={() => {
-                      setActiveItem("dashboard");
+                      navigate("/dashboard");
                       setShowProfileDropdown(false);
                     }}
                     className="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-base-200 transition-colors text-left"
@@ -179,7 +181,7 @@ const AppBar = ({
 
                   <button
                     onClick={() => {
-                      setActiveItem("settings");
+                      navigate("/settings");
                       setShowProfileDropdown(false);
                     }}
                     className="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-base-200 transition-colors text-left"
