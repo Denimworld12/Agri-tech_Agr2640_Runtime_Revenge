@@ -5,7 +5,7 @@ const backendUrl = "http://localhost:8080"
 const ChatContext = createContext();
 
 export const ChatProvider = ({ children }) => {
-  const chat = async (message) => {
+  const chat = async (message, language = "en-IN") => {
     setLoading(true);
     try {
       const token = localStorage.getItem("authToken"); // 👈 get token
@@ -16,7 +16,7 @@ export const ChatProvider = ({ children }) => {
           "Content-Type": "application/json",
           Authorization: token ? `Bearer ${token}` : "",
         },
-        body: JSON.stringify({ message }),
+        body: JSON.stringify({ message, language }),
       });
 
       if (!response.ok) {
@@ -57,6 +57,7 @@ export const ChatProvider = ({ children }) => {
   const [message, setMessage] = useState();
   const [loading, setLoading] = useState(false);
   const [cameraZoomed, setCameraZoomed] = useState(true);
+  const [selectedLanguage, setSelectedLanguage] = useState("en-IN");
 
   const onMessagePlayed = () => {
     setMessages((messages) => messages.slice(1));
@@ -79,6 +80,8 @@ export const ChatProvider = ({ children }) => {
         loading,
         cameraZoomed,
         setCameraZoomed,
+        selectedLanguage,
+        setSelectedLanguage,
       }}
     >
       {children}

@@ -3,26 +3,33 @@ import { useChat } from "../../hooks/useChat";
 
 export const UI = ({ hidden, ...props }) => {
   const input = useRef();
-  const { chat, loading, cameraZoomed, setCameraZoomed, message } = useChat();
+  const { chat, loading, cameraZoomed, setCameraZoomed, message, selectedLanguage, setSelectedLanguage } = useChat();
   const [isListening, setIsListening] = useState(false);
   const [interimText, setInterimText] = useState("");
-  const [selectedLanguage, setSelectedLanguage] = useState("en-US");
   const recognitionRef = useRef(null);
   const isListeningRef = useRef(false); // Track listening state in ref to avoid closure issues
 
   const languages = [
-    { code: "en-US", name: "English (US)" },
-    { code: "en-GB", name: "English (UK)" },
-    { code: "hi-IN", name: "Hindi" },
+    { code: "en-IN", name: "English (India)", flag: "🇮🇳" },
+    { code: "hi-IN", name: "हिन्दी (Hindi)", flag: "🇮🇳" },
+    { code: "mr-IN", name: "मराठी (Marathi)", flag: "🇮🇳" },
+    { code: "ta-IN", name: "தமிழ் (Tamil)", flag: "🇮🇳" },
+    { code: "te-IN", name: "తెలుగు (Telugu)", flag: "🇮🇳" },
+    { code: "bn-IN", name: "বাংলা (Bengali)", flag: "🇮🇳" },
+    { code: "gu-IN", name: "ગુજરાતી (Gujarati)", flag: "🇮🇳" },
+    { code: "kn-IN", name: "ಕನ್ನಡ (Kannada)", flag: "🇮🇳" },
+    { code: "ml-IN", name: "മലയാളം (Malayalam)", flag: "🇮🇳" },
+    { code: "pa-IN", name: "ਪੰਜਾਬੀ (Punjabi)", flag: "🇮🇳" },
+    { code: "en-US", name: "English (US)", flag: "🇺🇸" },
   ];
 
   // Initialize speech recognition
   // Inside UI component...
-const sendMessage = (directText) => {
+  const sendMessage = (directText) => {
     const text = typeof directText === 'string' ? directText : input.current.value;
-    
+
     if (!loading && text.trim()) {
-      chat(text);
+      chat(text, selectedLanguage); // Pass language to backend
       if (input.current) input.current.value = "";
       setInterimText("");
       // Force listening off after sending
@@ -32,28 +39,35 @@ const sendMessage = (directText) => {
     }
   };
   // Initialize speech recognition
-useEffect(() => {
+  useEffect(() => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) return;
 
     const recognition = new SpeechRecognition();
-    
-    // Setting continuous to FALSE makes it stop and trigger 'onend' 
-    // as soon as you stop speaking (the pause-to-send behavior).
-    recognition.continuous = false; 
+
+    // Enhanced settings for better accuracy
+    recognition.continuous = false;
     recognition.interimResults = true;
     recognition.lang = selectedLanguage;
+    recognition.maxAlternatives = 3; // Get top 3 alternatives for better accuracy
 
     recognition.onstart = () => {
+      console.log(`🎤 Voice recognition started (${selectedLanguage})`);
       setIsListening(true);
       isListeningRef.current = true;
     };
 
     recognition.onresult = (event) => {
       let interimTranscript = '';
+      let finalTranscript = '';
+
       for (let i = event.resultIndex; i < event.results.length; i++) {
         const transcript = event.results[i][0].transcript;
+        const confidence = event.results[i][0].confidence;
+
         if (event.results[i].isFinal) {
+          finalTranscript = transcript;
+          console.log(`✅ Final transcript: "${transcript}" (confidence: ${(confidence * 100).toFixed(0)}%)`);
           // Update the input field with the final text
           if (input.current) input.current.value = transcript;
         } else {
@@ -65,9 +79,10 @@ useEffect(() => {
 
     recognition.onend = () => {
       const finalValue = input.current?.value.trim();
-      
+
       // If we have text and were actually listening, send it!
       if (isListeningRef.current && finalValue) {
+        console.log(`📤 Sending message: "${finalValue}"`);
         sendMessage(finalValue);
       } else {
         setIsListening(false);
@@ -77,9 +92,33 @@ useEffect(() => {
     };
 
     recognition.onerror = (event) => {
-      console.error('Speech Error:', event.error);
-      setIsListening(false);
-      isListeningRef.current = false;
+      console.error('🔴 Speech Error:', event.error);
+
+      // Handle specific errors
+      if (event.error === 'no-speech') {
+        console.log('⚠️ No speech detected, auto-restarting...');
+        // Auto-restart for no-speech errors
+        setTimeout(() => {
+          if (isListeningRef.current) {
+            try {
+              recognition.start();
+            } catch (e) {
+              console.log('Could not restart:', e.message);
+            }
+          }
+        }, 100);
+      } else if (event.error === 'network') {
+        alert('❌ Network error. Please check your internet connection.');
+        setIsListening(false);
+        isListeningRef.current = false;
+      } else if (event.error === 'not-allowed') {
+        alert('❌ Microphone access denied. Please enable microphone permissions.');
+        setIsListening(false);
+        isListeningRef.current = false;
+      } else {
+        setIsListening(false);
+        isListeningRef.current = false;
+      }
     };
 
     recognitionRef.current = recognition;
@@ -157,7 +196,7 @@ useEffect(() => {
           {/* Language Selector */}
           <div className="flex items-center gap-2">
             <label className="text-[#bef264] bg-[#064e3b] bg-opacity-90 backdrop-blur-md px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-md">
-              Language
+              🗣️ Language
             </label>
             <select
               value={selectedLanguage}
@@ -167,7 +206,7 @@ useEffect(() => {
             >
               {languages.map((lang) => (
                 <option key={lang.code} value={lang.code}>
-                  {lang.name}
+                  {lang.flag} {lang.name}
                 </option>
               ))}
             </select>
