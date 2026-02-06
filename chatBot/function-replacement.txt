@@ -1,0 +1,2 @@
+// This function is now imported from tts-helper.js
+// The generateAudioWithGTTS function provides FREE Google Text-to-Speech
