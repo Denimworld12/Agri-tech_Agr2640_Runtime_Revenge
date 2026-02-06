@@ -90,6 +90,24 @@ const cleanupAudioFiles = async () => {
 
 app.post("/chat", async (req, res) => {
   const userMessage = req.body.message;
+  const userLanguage = req.body.language || "en-IN";
+
+  // Language code to name mapping
+  const languageMap = {
+    "en-IN": "English",
+    "en-US": "English",
+    "hi-IN": "Hindi",
+    "mr-IN": "Marathi",
+    "ta-IN": "Tamil",
+    "te-IN": "Telugu",
+    "bn-IN": "Bengali",
+    "gu-IN": "Gujarati",
+    "kn-IN": "Kannada",
+    "ml-IN": "Malayalam",
+    "pa-IN": "Punjabi"
+  };
+
+  const languageName = languageMap[userLanguage] || "English";
 
   if (!elevenLabsApiKey || !process.env.GROQ_API_KEY) {
     res.send({
@@ -106,7 +124,7 @@ app.post("/chat", async (req, res) => {
 
   await cleanupAudioFiles();
 
-  console.log("Received message from frontend:", userMessage);
+  console.log(`Received message from frontend: "${userMessage}" (Language: ${languageName})`);
 
   const authHeader = req.headers.authorization;
   const token = authHeader?.split(" ")[1];
@@ -144,6 +162,7 @@ CRITICAL RULES:
 2. You MUST preserve all technical facts.
 3. Any location-specific reference (such as Kerala, districts, or local state mentions)
    must be generalized to a PAN-INDIA context unless the user explicitly specifies a state.
+4. **LANGUAGE RULE: You MUST respond in ${languageName} language.** All text in the "text" field must be in ${languageName}.
 
 LOCATION NORMALIZATION RULE:
 - If any response mentions a specific Indian state (e.g., Kerala),
@@ -154,13 +173,14 @@ LOCATION NORMALIZATION RULE:
 
 You are NOT allowed to:
 - Introduce new locations
-- Hallucinate state-specific data
+- Hallucate state-specific data
 - Lock advice to one region unless explicitly provided
+- Respond in any language other than ${languageName}
 
 OUTPUT FORMAT:
 Always reply using JSON with a "messages" array (max 3 messages).
 Each message must contain:
-- text
+- text (in ${languageName} language)
 - facialExpression
 - animation
 
@@ -169,6 +189,7 @@ STYLE:
 - Simple for farmers
 - Practical
 - Actionable
+- In ${languageName} language
 
 AVAILABLE VISUALS:
 - facialExpressions: smile, sad, angry, surprised, funnyFace, default
@@ -239,7 +260,7 @@ AVAILABLE VISUALS:
           if (!elevenLabsResponse.ok) {
             const errorData = await elevenLabsResponse.json().catch(() => ({}));
             console.error(`✗ ElevenLabs API Error ${elevenLabsResponse.status}:`, errorData);
-            
+
             if (elevenLabsResponse.status === 402) {
               console.error(`Your ElevenLabs account has run out of credits.`);
               throw new Error('ElevenLabs API: Payment Required - Out of credits');
@@ -253,7 +274,7 @@ AVAILABLE VISUALS:
 
           // Get the audio buffer
           const audioBuffer = await elevenLabsResponse.arrayBuffer();
-          
+
           // Write to file
           await fs.writeFile(fileName, Buffer.from(audioBuffer));
           console.log(`✓ ElevenLabs audio file created: ${fileName} (${audioBuffer.byteLength} bytes)`);
@@ -263,7 +284,7 @@ AVAILABLE VISUALS:
 
           // Fallback to Google TTS
           console.log(`\n⚠️  Trying FREE Google TTS fallback...\n`);
-          
+
           try {
             const success = await generateAudioWithGTTS(message.text, fileName);
             if (!success) {
@@ -280,7 +301,7 @@ AVAILABLE VISUALS:
         try {
           const stats = await fs.stat(fileName);
           console.log(`✓ Audio file verified: ${fileName} (${stats.size} bytes)`);
-          
+
           // Read audio file and convert to base64
           message.audio = await audioFileToBase64(fileName);
           console.log(`✓ Audio converted to base64 for message ${i}`);
