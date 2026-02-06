@@ -111,7 +111,7 @@ const Chatbot = ({ language = "en" }) => {
 
       // Set language based on current language
       const langCode =
-        language === "hi" ? "hi-IN" : language === "ml" ? "ml-IN" : "en-US";
+        language === "hi" ? "hi-IN" : language === "mr" ? "mr-IN" : language === "ml" ? "ml-IN" : "en-US";
       recognitionRef.current.lang = langCode;
 
       recognitionRef.current.onresult = (event) => {
@@ -182,7 +182,7 @@ const Chatbot = ({ language = "en" }) => {
         throw new Error("Failed to get response from server");
       }
 
-      const data =  await response.json();
+      const data = await response.json();
 
       const botResponse = {
         id: Date.now() + 1,
@@ -296,7 +296,7 @@ const Chatbot = ({ language = "en" }) => {
 
       // Set language for speech
       const langCode =
-        language === "hi" ? "hi-IN" : language === "ml" ? "ml-IN" : "en-US";
+        language === "hi" ? "hi-IN" : language === "mr" ? "mr-IN" : language === "ml" ? "ml-IN" : "en-US";
       utterance.lang = langCode;
 
       utterance.onend = () => setIsSpeaking(false);
@@ -372,22 +372,19 @@ const Chatbot = ({ language = "en" }) => {
         {messages.map((message) => (
           <div
             key={message.id}
-            className={`flex ${
-              message.sender === "user" ? "justify-end" : "justify-start"
-            }`}
+            className={`flex ${message.sender === "user" ? "justify-end" : "justify-start"
+              }`}
           >
             <div
-              className={`w-full flex ${
-                message.sender === "user" ? "flex-row-reverse" : "flex-row"
-              } items-end space-x-2`}
+              className={`w-full flex ${message.sender === "user" ? "flex-row-reverse" : "flex-row"
+                } items-end space-x-2`}
             >
               {/* Avatar - Compact for sidebar */}
               <div
-                className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                  message.sender === "user"
-                    ? "bg-blue-500 ml-2"
-                    : "bg-green-500 mr-2"
-                }`}
+                className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${message.sender === "user"
+                  ? "bg-blue-500 ml-2"
+                  : "bg-green-500 mr-2"
+                  }`}
               >
                 <span className="text-white text-sm">
                   {message.sender === "user" ? "👤" : "🤖"}
@@ -397,11 +394,10 @@ const Chatbot = ({ language = "en" }) => {
               {/* Message bubble - Optimized for sidebar */}
               <div className="flex flex-col flex-1 min-w-0">
                 <div
-                  className={`px-3 py-2 rounded-lg shadow-sm ${
-                    message.sender === "user"
-                      ? "bg-blue-500 text-white rounded-br-md"
-                      : "bg-white text-gray-900 border border-gray-200 rounded-bl-md"
-                  }`}
+                  className={`px-3 py-2 rounded-lg shadow-sm ${message.sender === "user"
+                    ? "bg-blue-500 text-white rounded-br-md"
+                    : "bg-white text-gray-900 border border-gray-200 rounded-bl-md"
+                    }`}
                 >
                   <p className="text-base leading-relaxed font-medium break-words">
                     {message.text}
@@ -410,9 +406,8 @@ const Chatbot = ({ language = "en" }) => {
 
                 {/* Message actions - Larger and more accessible */}
                 <div
-                  className={`flex items-center mt-3 space-x-3 ${
-                    message.sender === "user" ? "justify-end" : "justify-start"
-                  }`}
+                  className={`flex items-center mt-3 space-x-3 ${message.sender === "user" ? "justify-end" : "justify-start"
+                    }`}
                 >
                   <span className="text-sm text-gray-500 font-medium">
                     {message.timestamp.toLocaleTimeString([], {
@@ -470,11 +465,10 @@ const Chatbot = ({ language = "en" }) => {
           {/* Voice input button */}
           <Button
             onClick={toggleVoiceInput}
-            className={`px-3 py-3 text-sm ${
-              isListening
-                ? "bg-red-500 hover:bg-red-600"
-                : "bg-blue-500 hover:bg-blue-600"
-            } text-white border-0 font-medium shadow-md flex-shrink-0 rounded-full`}
+            className={`px-3 py-3 text-sm ${isListening
+              ? "bg-red-500 hover:bg-red-600"
+              : "bg-blue-500 hover:bg-blue-600"
+              } text-white border-0 font-medium shadow-md flex-shrink-0 rounded-full`}
             disabled={isSpeaking}
             title={isListening ? t.stopVoice : t.startVoice}
           >

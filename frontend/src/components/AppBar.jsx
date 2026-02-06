@@ -53,6 +53,7 @@ const AppBar = ({
     const titles = {
       en: { dashboard: "Agriti", crops: "Crop Prediction", weather: "Weather Forecast", analytics: "Market Prices", "disease-detector": "Disease Detector", chatbot: "AgriBot Assistant", irrigation: "Irrigation", livestock: "Livestock Management", inventory: "Inventory Management", reports: "Schemes", settings: "Settings" },
       hi: { dashboard: "डैशबोर्ड", crops: "फसल भविष्यवाणी", weather: "मौसम पूर्वानुमान", analytics: "बाजार भाव", "disease-detector": "रोग डिटेक्टर", chatbot: "कृषि सहायक", irrigation: "सिंचाई", livestock: "पशुधन प्रबंधन", inventory: "इन्वेंट्री प्रबंधन", reports: "योजनाएं", settings: "सेटिंग्स" },
+      mr: { dashboard: "डॅशबोर्ड", crops: "पीक अंदाज", weather: "हवामान अंदाज", analytics: "बाजार भाव", "disease-detector": "रोग शोधक", chatbot: "कृषी सहाय्यक", irrigation: "सिंचन", livestock: "पशुधन व्यवस्थापन", inventory: "यादी व्यवस्थापन", reports: "योजना", settings: "सेटिंग्ज" },
       ml: { dashboard: "ഡാഷ്ബോർഡ്", crops: "വിള പ്രവചനം", weather: "കാലാവസ്ഥ പ്രവചനം", analytics: "വിപണി വിലകൾ", "disease-detector": "രോഗ നിർണയം", chatbot: "കൃഷി സഹായി", irrigation: "ജലസേചനം", livestock: "കന്നുകാലി പരിപാലനം", inventory: "ഇൻവെന്ററി മാനേജ്മെന്റ്", reports: "പദ്ധതികൾ", settings: "ക്രമീകരണങ്ങൾ" },
     };
     return titles[language]?.[item] || "AgriDash";
@@ -97,7 +98,7 @@ const AppBar = ({
                 {getPageTitle(activeItem)}
               </h1>
               <p className="hidden lg:flex text-[10px] uppercase font-bold tracking-wider opacity-50">
-                {language === "ml" ? "കൈകാര്യം ചെയ്യുക" : language === "hi" ? "प्रबंधन करें" : "Management Portal"}
+                {language === "hi" ? "प्रबंधन करें" : language === "mr" ? "व्यवस्थापन पोर्टल" : language === "ml" ? "കൈകാര്യം ചെയ്യുക" : "Management Portal"}
               </p>
             </div>
           </div>
@@ -113,7 +114,7 @@ const AppBar = ({
           >
             <span className="material-symbols-outlined text-sm text-primary">translate</span>
             <span className="text-xs font-bold">
-              {language === "en" ? "हिंदी" : language === "hi" ? "മലയാളം" : "English"}
+              {language === "en" ? "हिंदी" : language === "hi" ? "मराठी" : language === "mr" ? "മലയാളം" : "English"}
             </span>
           </button>
 
@@ -188,7 +189,7 @@ const AppBar = ({
                   >
                     <span className="material-symbols-outlined text-primary">settings</span>
                     <span className="text-sm font-bold">
-                      {language === "ml" ? "ക്രമീകരണങ്ങൾ" : language === "hi" ? "सेटिंग्स" : "Settings"}
+                      {language === "hi" ? "सेटिंग्स" : language === "mr" ? "सेटिंग्ज" : language === "ml" ? "ക്രമീകരണങ്ങൾ" : "Settings"}
                     </span>
                   </button>
 
@@ -203,7 +204,7 @@ const AppBar = ({
                   >
                     <span className="material-symbols-outlined">logout</span>
                     <span className="text-sm font-bold">
-                      {language === "ml" ? "ലോഗ് ഔട്ട്" : language === "hi" ? "लॉग ഔട്ട്" : "Logout"}
+                      {language === "hi" ? "लॉग आउट" : language === "mr" ? "बाहेर पडा" : language === "ml" ? "ലോഗ് ഔട്ട്" : "Logout"}
                     </span>
                   </button>
                 </div>
@@ -221,21 +222,23 @@ const AppBar = ({
               <span className="material-symbols-outlined text-4xl">logout</span>
             </div>
             <h3 className="font-black text-xl">
-              {language === "ml" ? "പുറത്തുകടക്കുക?" : language === "hi" ? "लॉग आउट करें?" : "Confirm Logout"}
+              {language === "hi" ? "लॉग आउट करें?" : language === "mr" ? "बाहेर पडण्याची पुष्टी करा" : language === "ml" ? "പുറത്തുകടക്കുക?" : "Confirm Logout"}
             </h3>
             <p className="py-4 text-sm opacity-70">
-              {language === "ml"
-                ? "നിങ്ങൾ ലോഗ് ഔട്ട് ചെയ്യാൻ ആഗ്രഹിക്കുന്നുണ്ടോ?"
-                : language === "hi"
-                  ? "क्या आप लॉग आउट करना चाहते हैं?"
-                  : "Are you sure you want to end your session?"}
+              {language === "hi"
+                ? "क्या आप लॉग आउट करना चाहते हैं?"
+                : language === "mr"
+                  ? "तुम्हाला तुमचे सत्र संपवायचे आहे का?"
+                  : language === "ml"
+                    ? "നിങ്ങൾ ലോഗ് ഔട്ട് ചെയ്യാൻ ആഗ്രഹിക്കുന്നുണ്ടോ?"
+                    : "Are you sure you want to end your session?"}
             </p>
             <div className="modal-action grid grid-cols-2 gap-3">
               <button className="btn btn-ghost border-base-300" onClick={cancelLogout}>
-                {language === "ml" ? "റദ്ദാക്കുക" : language === "hi" ? "रद्द करें" : "Cancel"}
+                {language === "hi" ? "रद्द करें" : language === "mr" ? "रद्द करा" : language === "ml" ? "റദ്ദാക്കുക" : "Cancel"}
               </button>
               <button className="btn btn-error font-bold" onClick={confirmLogout}>
-                {language === "ml" ? "ലോഗ് ഔട്ട്" : language === "hi" ? "लॉग आउट" : "Logout"}
+                {language === "hi" ? "लॉग आउट" : language === "mr" ? "बाहेर पडा" : language === "ml" ? "ലോഗ് ഔട്ട്" : "Logout"}
               </button>
             </div>
           </div>

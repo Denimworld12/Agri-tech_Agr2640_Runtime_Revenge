@@ -11,7 +11,8 @@ const Layout = ({ farmerData, onLogout }) => {
   const toggleLanguage = () => {
     setLanguage((prev) => {
       if (prev === "en") return "hi";
-      if (prev === "hi") return "ml";
+      if (prev === "hi") return "mr";
+      if (prev === "mr") return "ml";
       return "en";
     });
   };

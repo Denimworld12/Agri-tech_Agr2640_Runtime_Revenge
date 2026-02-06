@@ -13,6 +13,10 @@ const FloatingChatbot = ({ language = "en" }) => {
       openChat: "कृषि बॉट खोलें",
       closeChat: "चैट बंद करें",
     },
+    mr: {
+      openChat: "कृषी बॉट उघडा",
+      closeChat: "चॅट बंद करा",
+    },
     ml: {
       openChat: "കൃഷി ബോട്ട് തുറക്കുക",
       closeChat: "ചാറ്റ് അടയ്ക്കുക",
@@ -34,11 +38,13 @@ const FloatingChatbot = ({ language = "en" }) => {
             <div className="flex items-center space-x-3">
               <span className="text-3xl">🤖</span>
               <span className="hidden sm:block font-bold text-lg">
-                {language === "ml"
-                  ? "കൃഷി സാഥി"
-                  : language === "hi"
-                    ? "कृषि साथी"
-                    : "Agriti"}
+                {language === "hi"
+                  ? "कृषि साथी"
+                  : language === "mr"
+                    ? "कृषी साथी"
+                    : language === "ml"
+                      ? "കൃഷി സാഥി"
+                      : "Agriti"}
               </span>
             </div>
           </button>
@@ -59,18 +65,22 @@ const FloatingChatbot = ({ language = "en" }) => {
               <span className="text-2xl">🤖</span>
               <div>
                 <span className="font-bold text-lg">
-                  {language === "ml"
-                    ? "കൃഷി സാഥി"
-                    : language === "hi"
-                      ? "कृषि साथी"
-                      : "Agriti"}
+                  {language === "hi"
+                    ? "कृषि साथी"
+                    : language === "mr"
+                      ? "कृषी साथी"
+                      : language === "ml"
+                        ? "കൃഷി സാഥി"
+                        : "Agriti"}
                 </span>
                 <p className="text-green-100 text-sm">
-                  {language === "ml"
-                    ? "കൃഷി സഹായി"
-                    : language === "hi"
-                      ? "कृषि सहायक"
-                      : "Farming Assistant"}
+                  {language === "hi"
+                    ? "कृषि सहायक"
+                    : language === "mr"
+                      ? "कृषी सहाय्यक"
+                      : language === "ml"
+                        ? "കൃഷി സഹായി"
+                        : "Farming Assistant"}
                 </p>
               </div>
             </div>

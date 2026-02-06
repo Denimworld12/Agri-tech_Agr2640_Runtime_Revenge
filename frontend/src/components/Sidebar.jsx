@@ -42,14 +42,14 @@ const Sidebar = ({
   };
 
   const menuItems = [
-    { id: "dashboard", name: { en: "Agriti AI", hi: "डैशबोर्ड", ml: "ഡാഷ്ബോർഡ്" }, icon: "dashboard" },
-    { id: "crops", name: { en: "Crop Prediction", hi: "फसल भविष्यवाणी", ml: "വിള പ്രവചനം" }, icon: "agriculture" },
-    { id: "weather", name: { en: "Weather Forecast", hi: "मौसम पूर्वानुमान", ml: "കാലാവസ്ഥ പ്രവചനം" }, icon: "thermostat" },
-    { id: "analytics", name: { en: "Market Prices", hi: "बाजार भाव", ml: "വിപണി വിലകൾ" }, icon: "trending_up" },
-    { id: "disease-detector", name: { en: "Disease Detector", hi: "रोग डिटेक्टर", ml: "രോഗ നിർണയം" }, icon: "biotech" },
-    // { id: "inventory", name: { en: "Inventory", hi: "इन्वेंट्री", ml: "ഇൻവെന്ററി" }, icon: "inventory_2" },
-    { id: "reports", name: { en: "Schemes", hi: "योजनाएं", ml: "പദ്ധതികൾ" }, icon: "verified" },
-    { id: "settings", name: { en: "Settings", hi: "सेटिंग्स", ml: "ക്രമീകരണങ്ങൾ" }, icon: "settings" },
+    { id: "dashboard", name: { en: "Agriti AI", hi: "डैशबोर्ड", mr: "डॅशबोर्ड", ml: "ഡാഷ്ബോർഡ്" }, icon: "dashboard" },
+    { id: "crops", name: { en: "Crop Prediction", hi: "फसल भविष्यवाणी", mr: "पीक अंदाज", ml: "വിള പ്രവചനം" }, icon: "agriculture" },
+    { id: "weather", name: { en: "Weather Forecast", hi: "मौसम पूर्वानुमान", mr: "हवामान अंदाज", ml: "കാലാവസ്ഥ പ്രവചനം" }, icon: "thermostat" },
+    { id: "analytics", name: { en: "Market Prices", hi: "बाजार भाव", mr: "बाजार भाव", ml: "വിപണി വിലകൾ" }, icon: "trending_up" },
+    { id: "disease-detector", name: { en: "Disease Detector", hi: "रोग डिटेक्टर", mr: "रोग शोधक", ml: "രോഗ നിർണയം" }, icon: "biotech" },
+    // { id: "inventory", name: { en: "Inventory", hi: "इन्वेंट्री", mr: "यादी", ml: "ഇൻവെന്ററി" }, icon: "inventory_2" },
+    { id: "reports", name: { en: "Schemes", hi: "योजनाएं", mr: "योजना", ml: "പദ്ധതികൾ" }, icon: "verified" },
+    { id: "settings", name: { en: "Settings", hi: "सेटिंग्स", mr: "सेटिंग्ज", ml: "ക്രമീകരണങ്ങൾ" }, icon: "settings" },
   ];
 
   const getLabel = (item) => item.name[language] || item.name.en;
@@ -71,10 +71,10 @@ const Sidebar = ({
             {!isCollapsed && (
               <div>
                 <h2 className="text-lg font-black text-white leading-tight tracking-tight">
-                  {language === "ml" ? "അഗ്രിഡാഷ്" : language === "hi" ? "एग्रीडैश" : "AgriDash"}
+                  {language === "hi" ? "एग्रीडैश" : language === "mr" ? "आग्रीडॅश" : language === "ml" ? "അഗ്രിഡാഷ്" : "AgriDash"}
                 </h2>
                 <p className="text-[10px] uppercase font-bold tracking-[0.2em] text-[#bef264]/80">
-                  {language === "ml" ? "കർഷകർ" : language === "hi" ? "किसान" : "Farmer Portal"}
+                  {language === "hi" ? "किसान" : language === "mr" ? "शेतकू" : language === "ml" ? "കർഷകർ" : "Farmer Portal"}
                 </p>
               </div>
             )}
@@ -94,7 +94,7 @@ const Sidebar = ({
                   <span className="material-symbols-outlined text-sm">my_location</span>
                 )}
                 <span className="text-xs">
-                  {language === "ml" ? "ലൊക്കേഷൻ" : language === "hi" ? "स्थान" : "Location"}
+                  {language === "hi" ? "स्थान" : language === "mr" ? "स्थान" : language === "ml" ? "ലൊക്കേഷൻ" : "Location"}
                 </span>
               </button>
 
