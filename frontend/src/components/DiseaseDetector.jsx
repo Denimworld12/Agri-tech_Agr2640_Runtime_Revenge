@@ -55,15 +55,11 @@ function DiseaseDetector({ language }) {
     try {
       // Create FormData for file upload
       const formData = new FormData();
-      formData.append("image", selectedImage);
-      // Optional: Add crop type if we have it (could add a dropdown for this)
-      // formData.append("crop_type", "tomato");
-      // Optional: Add symptoms if we have them
-      // formData.append("symptoms", "brown spots");
+      formData.append("file", selectedImage);
 
-      // Call the disease detection API
+      // Call the ML prediction API
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/disease-detection/analyze`,
+        `${import.meta.env.VITE_API_URL}/predict`,
         {
           method: "POST",
           body: formData,
@@ -77,26 +73,60 @@ function DiseaseDetector({ language }) {
 
       const data = await response.json();
 
-      if (data.success) {
-        // Transform backend response to match frontend expectations
-        const analysis = data.analysis;
-        const diseaseInfo = analysis.detected_diseases?.[0];
+      // Transform ML model response to match frontend expectations
+      const diseaseMap = {
+        'BacterialBlights': {
+          name: 'Bacterial Blights',
+          severity: 'severe',
+          treatment: 'Apply copper-based bactericides. Remove infected leaves immediately.',
+          prevention: 'Use disease-free seeds, avoid overhead irrigation, maintain proper spacing'
+        },
+        'Healthy': {
+          name: 'Healthy Plant',
+          severity: 'none',
+          treatment: 'No treatment needed. Continue regular care.',
+          prevention: 'Maintain good agricultural practices'
+        },
+        'Mosaic': {
+          name: 'Mosaic Virus',
+          severity: 'moderate',
+          treatment: 'Remove infected plants, control aphid population using neem oil or insecticides.',
+          prevention: 'Use virus-free seeds, control insect vectors, remove weeds'
+        },
+        'RedRot': {
+          name: 'Red Rot Disease',
+          severity: 'severe',
+          treatment: 'Apply fungicides, remove and burn infected plants, use resistant varieties.',
+          prevention: 'Crop rotation, proper drainage, use healthy seed material'
+        },
+        'Rust': {
+          name: 'Rust Disease',
+          severity: 'moderate',
+          treatment: 'Apply fungicides like mancozeb or sulfur-based products.',
+          prevention: 'Ensure good air circulation, avoid overhead watering, remove infected leaves'
+        },
+        'Yellow': {
+          name: 'Yellow Disease',
+          severity: 'moderate',
+          treatment: 'Check for nutrient deficiency, apply balanced fertilizers.',
+          prevention: 'Regular soil testing, proper fertilization, maintain soil pH'
+        }
+      };
 
-        const formattedResult = {
-          disease: diseaseInfo?.name || "Unknown Disease",
-          crop: analysis.crop_type,
-          confidence: analysis.confidence ? Math.round(analysis.confidence * 100) : 0,
-          severity: diseaseInfo?.severity?.toLowerCase() || "moderate",
-          treatment: analysis.recommendations?.[0] || diseaseInfo?.treatment || "Consult agricultural expert",
-          prevention: analysis.recommendations?.[1] || diseaseInfo?.prevention?.join(", ") || "Follow standard prevention practices",
-          model_available: true,
-          analysis_id: analysis.analysis_id
-        };
+      const diseaseInfo = diseaseMap[data.prediction] || diseaseMap['Healthy'];
 
-        setResult(formattedResult);
-      } else {
-        throw new Error(data.error || "Analysis failed");
-      }
+      const formattedResult = {
+        disease: diseaseInfo.name,
+        crop: 'Sugarcane', // Model is trained on sugarcane
+        confidence: Math.round(data.confidence),
+        severity: diseaseInfo.severity,
+        treatment: diseaseInfo.treatment,
+        prevention: diseaseInfo.prevention,
+        model_available: true,
+        raw_prediction: data.prediction
+      };
+
+      setResult(formattedResult);
     } catch (error) {
       console.error("Disease detection error:", error);
       setError(
