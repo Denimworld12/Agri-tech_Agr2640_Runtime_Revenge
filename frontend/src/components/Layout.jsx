@@ -3,6 +3,7 @@ import { Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import AppBar from "./AppBar";
 import FloatingChatbot from "./FloatingChatbot";
+import VoiceAgent from "./VoiceAgent";
 
 const Layout = ({ farmerData, onLogout }) => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -39,6 +40,9 @@ const Layout = ({ farmerData, onLogout }) => {
 
       {/* Floating Chatbot - hidden on mobile/tablet, available on desktop */}
       <FloatingChatbot language={language} />
+
+      {/* Voice Agent - always available */}
+      <VoiceAgent />
     </div>
   );
 };

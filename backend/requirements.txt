@@ -86,3 +86,13 @@ qrcode
 webauthn
 tensorflow
 groq
+
+
+fastapi
+uvicorn
+requests
+python-dotenv
+python-multipart
+pillow 
+tensorflow
+numpy

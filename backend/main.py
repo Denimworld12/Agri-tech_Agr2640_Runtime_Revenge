@@ -9,9 +9,10 @@ inventory management, authentication system, and government schemes information.
 import os
 import uvicorn
 from datetime import datetime
-from fastapi import FastAPI
+from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
+from ml_model import predict_image
 
 # Import API routers
 from api import (
@@ -25,7 +26,8 @@ from api import (
     disease_detection,
     market_locator,
     crop_prediction,
-    soil_data
+    soil_data,
+    voice_commands
 )
 from api.auth import auth_router
 from api.agricultural_data import router as agricultural_data_router
@@ -79,6 +81,15 @@ app.include_router(disease_detection.router)
 app.include_router(market_locator.router, prefix="/api/markets", tags=["Market Locator"])
 app.include_router(crop_prediction.router)
 app.include_router(soil_data.router)  # Soil data from data.gov.in
+app.include_router(voice_commands.router)  # Voice agent
+
+# ML Prediction Endpoint
+@app.post("/predict")
+async def predict_route(file: UploadFile = File(...)):
+    """Predict crop disease from uploaded image"""
+    image_bytes = await file.read()
+    result = predict_image(image_bytes)
+    return result
 
 @app.get("/")
 async def root():
@@ -116,7 +127,8 @@ async def root():
                 "/api/schemes",
                 "/api/disease",
                 "/api/markets",
-                "/api/crop-prediction"
+                "/api/crop-prediction",
+                "/predict"
             ]
         },
         "timestamp": datetime.now().isoformat()
