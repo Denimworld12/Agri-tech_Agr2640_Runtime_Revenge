@@ -20,7 +20,7 @@ const voiceID = "1Z7Y8o9cvUeWq8oLKgMY";
 const app = express();
 app.use(express.json());
 app.use(cors());
-const port = process.env.PORT || 8765;
+const port = process.env.PORT || 8080;
 
 // Ensure audios directory exists at startup
 const audioFolder = path.join(process.cwd(), "audios");
