@@ -108,14 +108,20 @@ export const UI = ({ hidden, ...props }) => {
           }
         }, 100);
       } else if (event.error === 'network') {
-        alert('❌ Network error. Please check your internet connection.');
+        // Network errors are common in Brave/Chrome - just log and continue
+        console.warn('⚠️ Network hiccup during speech recognition. This is normal in some browsers.');
+        // Don't show alert - it's too disruptive
+        // The recognition will automatically retry or user can click again
+      } else if (event.error === 'not-allowed') {
+        alert('❌ Microphone access denied. Please enable microphone permissions in browser settings.');
         setIsListening(false);
         isListeningRef.current = false;
-      } else if (event.error === 'not-allowed') {
-        alert('❌ Microphone access denied. Please enable microphone permissions.');
+      } else if (event.error === 'aborted') {
+        console.log('Speech recognition aborted (normal when stopping)');
         setIsListening(false);
         isListeningRef.current = false;
       } else {
+        console.warn(`Speech recognition error: ${event.error}`);
         setIsListening(false);
         isListeningRef.current = false;
       }

@@ -30,7 +30,11 @@ const Dots = (props) => {
   if (!loading) return null;
   return (
     <group {...props}>
-      <Text fontSize={0.14} anchorX={"left"} anchorY={"bottom"}>
+      <Text
+        fontSize={0.14}
+        anchorX={"left"}
+        anchorY={"bottom"}
+      >
         {loadingText}
         <meshBasicMaterial attach="material" color="black" />
       </Text>
@@ -114,11 +118,10 @@ const LyricsDisplay = (props) => {
       {displayLines.map((line, index) => (
         <Text
           key={index}
-          fontSize={0.12}
+          fontSize={0.14}
           anchorX={"center"}
           anchorY={"top"}
-          position-y={-index * 0.15}
-          // Use the responsive width calculated above
+          position-y={-index * 0.16}
           maxWidth={responsiveMaxWidth}
           textAlign="center"
         >
